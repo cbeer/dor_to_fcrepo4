@@ -5,7 +5,9 @@ require "config/environments/#{ENV['ENV']}"
 
 
 RestClient.enable Rack::Cache,
-                  verbose: true,
-                  default_ttl: 1000000,
+                  verbose: false,
+                  default_ttl: 100000,
+                  allow_revalidate: false,
+                  allow_reload: false,
                   :metastore => "file:#{File.expand_path("../../tmp/meta", __FILE__)}", 
                   :entitystore => "file:#{File.expand_path("../../tmp/entity", __FILE__)}"

@@ -1,0 +1,43 @@
+@prefix dc: <http://purl.org/dc/terms/> ;
+@prefix dor-identity: <http://library.stanford.edu/dlss/dor/identity#> ;
+@prefix relsext: <http://fedora.info/definitions/v4/rels-ext#>;
+@prefix modsrdf: <http://www.loc.gov/mods/rdf/v1#> ;
+@prefix madsrdf: <http://www.loc.gov/mads/rdf/v1#> ;
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ;
+@prefix fedora: <http://fedora.info/definitions/v4/repository#> ;
+@prefix ldp: <http://www.w3.org/ns/ldp#> ;
+@prefix jhove: <http://hul.harvard.edu/ois/xml/ns/jhove#> ;
+@prefix prov: <http://www.w3.org/ns/prov#> ;
+@prefix xml: <http://www.w3.org/XML/1998/namespace> ;
+
+id = . :: xsd:string ;
+type = (. | (. within rdfs:seeAlso)) / rdf:type :: xsd:string ;
+uuid = fedora:uuid :: xsd:string ;
+created = fedora:created :: xsd:dateTime ;
+last_modified = fedora:lastModified :: xsd:dateTime ;
+
+title = dc:title | dor-identity:objectLabel :: xsd:string ;
+
+collection_title = relsext:isMemberOfCollection / dc:title :: xsd:string ;
+collection_ids = relsext:isMemberOfCollection / dor-identity:otherId :: xsd:string ;
+
+creator = dor-identity:objectCreator :: xsd:string ;
+otherId = dor-identity:otherId :: xsd:string ;
+sourceId = dor-identity:sourceId :: xsd:string ;
+tags = dor-identity:tag :: xsd:string ;
+
+license = dc:license :: xsd:string ;
+rights = dc:rights :: xsd:string ;
+
+mods_principal_name = (. within rdfs:seeAlso) / ((* within modsrdf:namePrincipal) / rdfs:label) :: xsd:string ;
+mods_name = (. within rdfs:seeAlso) / ((* within modsrdf:name) / rdfs:label) :: xsd:string ;
+mods_identifiers = (. within rdfs:seeAlso) / (modsrdf:identifier | ((* within modsrdf:identifierGroup) / fn:concat(xml:identifierGroupType, ": ", xml:identifierGroupValue))) :: xsd:string ;
+mods_note = (. within rdfs:seeAlso) / (modsrdf:note | ((* within modsrdf:noteGroup) / modsrdf:noteGroupValue)) :: xsd:string ;
+mods_genre = (. within rdfs:seeAlso) / (* within modsrdf:genre) / rdfs:label :: xsd:string ;
+mods_place = (. within rdfs:seeAlso) / (* within modsrdf:placeOfOrigin) / rdfs:label :: xsd:string ;
+mods_publisher = (. within rdfs:seeAlso) / (* within modsrdf:publisher) / rdfs:label :: xsd:string ;
+mods_physical_extent = (. within rdfs:seeAlso) / modsrdf:physicalExtent :: xsd:string ;
+mods_subject = (. within rdfs:seeAlso) / ((* within modsrdf:subjectComplex) / rdfs:label ) :: xsd:string ;
+mods_created_date = (. within rdfs:seeAlso) / modsrdf:resourceDateCreated :: xsd:String ;
+contents = ldp:contains[. / ldp:contains / ldp :contains / jhove:format] / ldp:contains :: xsd:string ;
+events = ldp:contains / ldp:contains[rdf:type is prov:Activity] :: xsd:string ;

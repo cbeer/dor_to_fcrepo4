@@ -1,20 +1,23 @@
 module Dor4
- class Base < ActiveResource::Ldp::Base
-    require 'dor4/desc_metadata'
+ class Base < Dor4::Core
+    has_child :descMetadata, class_name: "Dor4::DescMetadata"
 
-    has_child 'descMetadata', class_name: "Dor4::DescMetadatas"
-
-    self.site = "http://localhost:8080/rest"
-    require 'dor4/item'
-    require 'dor4/collection'
     schema_from_vocabulary RDF::DC
     
     schema do |s|
-      attribute 'pid', :string, predicate: "info:fedora/fedora-system:def/foxml#PID"
+      attribute :rdf_type, :uri, predicate: RDF.type
+      attribute 'pid', :string, predicate: RDF::URI.new("info:fedora/fedora-system:def/foxml#PID")
       (Dor::IdentityMetadataDS.terminology.terms.keys - [:identityMetadata]).each do |t|
         attribute t, :string, predicate: RDF::URI.new("http://library.stanford.edu/dlss/dor/identity##{t}")
       end
-      attribute 'event', :string, predicate: 'http://library.stanford.edu/dlss/dor/event'
+    end
+    
+    def uri
+      if URI(id).relative?
+        RDF::URI(self.class.site + id)
+      else
+        RDF::URI(id)
+      end  
     end
   end
 end
