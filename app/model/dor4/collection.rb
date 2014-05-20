@@ -7,6 +7,8 @@ module Dor4
     class << self
       def from_dor_object obj
         fcr = super
+        fcr.rdf_type ||= []
+        fcr.rdf_type << RDF::URI("http://projecthydra.org/ns/Dor4#Collection")
         fcr.save
         progress = ProgressBar.create(:title => "Processing", :total => obj.members.length)
         Parallel.each(obj.members, in_processes: 4, finish: lambda { |*args| progress.increment }) do |o|
@@ -23,6 +25,7 @@ module Dor4
     end
 
     schema do
+      attribute :rdf_type, :uri, predicate: RDF.type
       
     end
   end

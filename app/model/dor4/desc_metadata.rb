@@ -2,6 +2,9 @@ require 'tempfile'
 module Dor4
   class DescMetadata < Dor4::Core
     self.prefix = '/rest/:parent_id/descMetadata'
+    schema do
+      attribute :rdf_type, :uri, predicate: RDF.type
+    end
 
     class MODS < ActiveResource::Ldp::Binary
       self.site = "http://localhost:8081/rest/" 
@@ -34,6 +37,8 @@ module Dor4
     class << self
       def from_dor_object parent, obj
         md = parent.build_descMetadata object: parent
+        md.rdf_type ||= []
+        md.rdf_type << RDF::URI("http://projecthydra.org/ns#descMetadata")
         input = Tempfile.new "mods-to-transform.xml"
         input.write obj.content
         input.rewind

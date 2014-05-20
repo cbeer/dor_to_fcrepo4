@@ -67,6 +67,9 @@ module Dor4
                                      id: r.xpath("@id").text,
                                      sequence: r.xpath("@sequence").text,
                                      object: parent
+                                     
+          cm.rdf_type ||= []
+          cm.rdf_type << RDF::URI.new("http://library.stanford.edu/dlss/dor#Content")                          
           
           r.xpath('//file').each do |f|
             file = cm.files.build id: f.xpath("@id").text, object: cm
@@ -115,6 +118,7 @@ module Dor4
     end
     
     schema do
+      attribute :rdf_type, :uri, predicate: RDF.type
       attribute "title", :string, predicate: RDF::DC.title
       attribute "sequence", :integer, predicate: RDF::URI.new("info:seqNum")
     end

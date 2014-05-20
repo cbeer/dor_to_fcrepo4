@@ -4,6 +4,7 @@ class Dor4::Item < Dor4::Base
   has_many :events, class_name: "Dor4::Event"
   
   schema do
+    attribute :rdf_type, :uri, predicate: RDF.type
     attribute :collection_id, :uri, predicate: RDF::URI.new("http://fedora.info/definitions/v4/rels-ext#isMemberOfCollection")
     attribute :workflow_uri, :uri, predicate: RDF::URI.new("http://library.stanford.edu/dlss/dor#hasWorkflowStatus")
     attribute :seeAlso, :uri, predicate: RDF::URI("http://www.w3.org/2000/01/rdf-schema#seeAlso")
@@ -16,6 +17,12 @@ class Dor4::Item < Dor4::Base
       fcr.id = DruidTools::Druid.new(obj.pid).tree.join("/")
       
       fcr.pid = obj.pid
+
+      fcr.rdf_type ||= []
+      fcr.rdf_type << RDF::URI("http://projecthydra.org/ns/Dor4#Item")
+      obj.class.ancestors.select { |x| x.to_s =~ /^Dor/ }.each do |i|
+        fcr.rdf_type << RDF::URI("http://projecthydra.org/ns/Dor##{i.to_s.split("::").last}")
+      end
       
       obj.dc.class.terminology.terms.keys.each do |t|
         if RDF::DC.respond_to? t
