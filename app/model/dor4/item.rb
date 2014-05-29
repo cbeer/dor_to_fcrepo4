@@ -13,10 +13,21 @@ class Dor4::Item < Dor4::Base
   class << self
     def from_dor_object obj
       fcr = new 
-      Faraday.delete("http://localhost:8081/rest/" + DruidTools::Druid.new(obj.pid).tree.join("/"))
+      Faraday.delete( Dor4::Core.site + DruidTools::Druid.new(obj.pid).tree.join("/"))
       fcr.id = DruidTools::Druid.new(obj.pid).tree.join("/")
       
       fcr.pid = obj.pid
+      
+      unless obj.descMetadata.new?
+        input = Tempfile.new "mods-to-transform.xml"
+        input.write obj.descMetadata.content
+        input.rewind
+        mods_rdf = %x{ saxon -s:#{input.path} -xsl:/Users/cabeer/tmp/modsrdf.xsl | rdf serialize --input-format rdfxml  --output-format ttl }
+        mods_rdf.gsub!(":MODS123456", "<>").gsub!(/<#([^>]+)>/) { |match| "_:#{$1}"}
+        mods_rdf.gsub!(/(\s):/, "\\1modsrdf:")
+        
+        fcr.graph_to_encode.from_ttl(mods_rdf)
+      end
 
       fcr.rdf_type ||= []
       fcr.rdf_type << RDF::URI("http://projecthydra.org/ns/Dor4#Item")
@@ -40,11 +51,6 @@ class Dor4::Item < Dor4::Base
       fcr.rights = obj.rightsMetadata.ng_xml.xpath("//use/human[@type='useAndReproduction']").map { |x| x.text }
       
       fcr.save
-      
-      Dor4::DescMetadata.from_dor_object fcr, obj.descMetadata
-
-      fcr.seeAlso ||= []
-      fcr.seeAlso += fcr.descMetadata.content.id
 
       if obj.contentMetadata
         Dor4::Content.from_dor_object fcr, obj, obj.contentMetadata

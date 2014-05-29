@@ -7,9 +7,9 @@ module Dor4
       
       class Binary < ActiveResource::Ldp::Binary
         belongs_to :datastream, class_name: "Dor4::Content::File"
-        self.site = "http://localhost:8081/rest/"
+        self.site = Dor4::Core.site
         self.prefix = '/rest/:object_path/:datastream_id/fcr:content'
-        
+    
         schema do
           attribute "mimeType", :string
         end

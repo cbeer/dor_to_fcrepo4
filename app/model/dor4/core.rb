@@ -1,6 +1,5 @@
 module Dor4
   class Core < ActiveResource::Ldp::Base
-    require 'dor4/desc_metadata'
     require 'dor4/base'
     self.site = "http://localhost:8081/rest"
     require 'dor4/item'
