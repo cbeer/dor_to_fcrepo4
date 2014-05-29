@@ -43,6 +43,10 @@ module Dor4
         super.merge(parent_id: object.to_param)
       end
       
+      schema do
+        attribute :stacks_url, :uri, predicate: RDF::URI("http://library.stanford.edu/dlss/dor/content#hasStacksURI")
+      end
+      
       protected
       # Create (i.e., \save to the remote service) the \new resource.
       def create
@@ -103,7 +107,8 @@ module Dor4
                 file.send("#{name}=", doc2.to_xml)
               end
             end
-            file.build_content content: Faraday.get("https://stacks.stanford.edu/file/#{obj.pid}/#{file.id}").body, datastream: file, mimeType: f.xpath("@mimetype").text
+            file.stacks_url = "https://stacks.stanford.edu/file/#{obj.pid}/#{file.id}"
+            file.build_content content: Faraday.get(file.stacks_url).body, datastream: file, mimeType: f.xpath("@mimetype").text
           end
           cm.save
         end
