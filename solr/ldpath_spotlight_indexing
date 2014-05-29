@@ -10,6 +10,8 @@
 @prefix prov: <http://www.w3.org/ns/prov#> ;
 @prefix xml: <http://www.w3.org/XML/1998/namespace> ;
 @prefix foaf: <http://xmlns.com/foaf/0.1/> ;
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ;
+@prefix oa: <http://www.w3.org/ns/oa#> ;
 
 id = . :: xsd:string ;
 type = (. | (. within rdfs:seeAlso)) / rdf:type :: xsd:string ;
@@ -17,7 +19,7 @@ uuid = fedora:uuid :: xsd:string ;
 created = fedora:created :: xsd:dateTime ;
 last_modified = fedora:lastModified :: xsd:dateTime ;
 
-title = dc:title | dor-identity:objectLabel :: xsd:string ;
+title = fn:first(dc:title, dor-identity:objectLabel, modsrdf:titlePrincipal / rdfs:label) :: xsd:string ;
 
 collection_title = relsext:isMemberOfCollection / dc:title :: xsd:string ;
 collection_ids = relsext:isMemberOfCollection / dor-identity:otherId :: xsd:string ;
@@ -30,20 +32,26 @@ tags = dor-identity:tag :: xsd:string ;
 license = dc:license :: xsd:string ;
 rights = dc:rights :: xsd:string ;
 
-contents = ldp:contains[. / ldp:contains / ldp :contains / jhove:format] / ldp:contains :: xsd:string ;
+contents = ldp:contains[. / ldp:contains / ldp:contains / jhove:format] / ldp:contains :: xsd:string ;
 events = ldp:contains / ldp:contains[rdf:type is prov:Activity] :: xsd:string ;
 
-mods_principal_name = (. within rdfs:seeAlso) / (* within modsrdf:namePrincipal) / rdfs:label :: xsd:string ;
-mods_name = (. within rdfs:seeAlso) / (* within (modsrdf:name | modsrdf:namePrincipal)) / rdfs:label :: xsd:string ;
-mods_identifiers = (. within rdfs:seeAlso) / (modsrdf:identifier | ((* within modsrdf:identifierGroup) / fn:concat(xml:identifierGroupType, ": ", xml:identifierGroupValue))) :: xsd:string ;
-mods_note = (. within rdfs:seeAlso) / (modsrdf:note | ((* within modsrdf:noteGroup) / modsrdf:noteGroupValue)) :: xsd:string ;
-mods_genre = (. within rdfs:seeAlso) / (* within modsrdf:genre) / rdfs:label :: xsd:string ;
-mods_place = (. within rdfs:seeAlso) / (* within modsrdf:placeOfOrigin) / rdfs:label :: xsd:string ;
-mods_publisher = (. within rdfs:seeAlso) / (* within modsrdf:publisher) / rdfs:label :: xsd:string ;
-mods_physical_extent = (. within rdfs:seeAlso) / modsrdf:physicalExtent :: xsd:string ;
-mods_subject = (. within rdfs:seeAlso) / ((* within modsrdf:subjectComplex) / rdfs:label ) :: xsd:string ;
-mods_created_date = (. within rdfs:seeAlso) / modsrdf:resourceDateCreated :: xsd:string ;
+mods_title = fn:first(modsrdf:title, modsrdf:titlePrincipal / rdfs:label) :: xsd:string ;
+mods_principal_name = modsrdf:namePrincipal / rdfs:label :: xsd:string ;
+mods_name = (modsrdf:name | modsrdf:namePrincipal) / rdfs:label :: xsd:string ;
+mods_identifiers = modsrdf:identifier | modsrdf:identifierGroup / fn:concat(xml:identifierGroupType, ": ", xml:identifierGroupValue) :: xsd:string ;
+mods_note = modsrdf:note | (modsrdf:noteGroup / modsrdf:noteGroupValue) :: xsd:string ;
+mods_genre = modsrdf:genre / rdfs:label :: xsd:string ;
+mods_place = modsrdf:placeOfOrigin / rdfs:label :: xsd:string ;
+mods_publisher = modsrdf:publisher / rdfs:label :: xsd:string ;
+mods_physical_extent = modsrdf:physicalExtent :: xsd:string ;
+mods_subject = modsrdf:subjectComplex / rdfs:label :: xsd:string ;
+mods_created_date = fn:first(modsrdf:resourceDateCreated, modsrdf:resourceDateCreatedStart ):: xsd:string ;
+mods_created_date_start = modsrdf:resourceDateCreatedStart :: xsd:string ;
+mods_created_date_end = modsrdf:resourceDateCreatedEnd :: xsd:string ;
+mods_altnames = (modsrdf:name | modsrdf:namePrincipal) / modsrdf:authorityLink / madsrdf:hasExactExternalAuthority / foaf:focus / foaf:name :: xsd:string ;
+mods_name_lccn = (modsrdf:name | modsrdf:namePrincipal) / modsrdf:authorityLink / <http://id.loc.gov/vocabulary/identifiers/lccn> :: xsd:string ;
+mods_name_lc = (modsrdf:name | modsrdf:namePrincipal) / modsrdf:authorityLink / madsrdf:authoritativeLabel :: xsd:string ;
+mods_geo_subject = modsrdf:subjectComplex / madsrdf:componentList / rdf:first / fn:asUri(fn:concat("http://id.loc.gov/authorities/label/", fn:urlencode(rdfs:label))) / (fn:asUri(fn:header("X-URI")) within .) / madsrdf:authoritativeLabel :: xsd:string;
 
-mods_altnames = (. within rdfs:seeAlso) / (* within (modsrdf:name | modsrdf:namePrincipal)) / modsrdf:authorityLink / madsrdf:hasExactExternalAuthority / foaf:focus / foaf:name :: xsd:string ;
-mods_name_lccn = (. within rdfs:seeAlso) / (* within (modsrdf:name | modsrdf:namePrincipal)) / modsrdf:authorityLink / <http://id.loc.gov/vocabulary/identifiers/lccn> :: xsd:string ;
-mods_name_lc = (. within rdfs:seeAlso) / (* within (modsrdf:name | modsrdf:namePrincipal)) / modsrdf:authorityLink / madsrdf:authoritativeLabel :: xsd:string ;
+oa_tags = ^oa:hasTarget[oa:motivatedBy is oa:tagging] / oa:hasBody / rdfs:label :: xsd:string ;
+oa_exhibit_tags = ^oa:hasTarget[oa:motivatedBy is oa:tagging] / .[oa:serializedBy is <http://localhost:8081/exhibit>] / oa:hasBody / rdfs:label :: xsd:string ;

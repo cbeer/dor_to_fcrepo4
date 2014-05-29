@@ -1,0 +1,3 @@
+@prefix dc: <http://purl.org/dc/terms/> ;
+
+content_type = fn:header("Content-Type") :: xsd:string ;
