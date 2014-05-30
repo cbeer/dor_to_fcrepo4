@@ -1,5 +1,6 @@
 @prefix dc: <http://purl.org/dc/terms/> ;
 @prefix dor-identity: <http://library.stanford.edu/dlss/dor/identity#> ;
+@prefix dor-content: <http://library.stanford.edu/dlss/dor/content#> ;
 @prefix relsext: <http://fedora.info/definitions/v4/rels-ext#>;
 @prefix modsrdf: <http://www.loc.gov/mods/rdf/v1#> ;
 @prefix madsrdf: <http://www.loc.gov/mads/rdf/v1#> ;
@@ -14,44 +15,49 @@
 @prefix oa: <http://www.w3.org/ns/oa#> ;
 
 id = . :: xsd:string ;
-type = (. | (. within rdfs:seeAlso)) / rdf:type :: xsd:string ;
-uuid = fedora:uuid :: xsd:string ;
-created = fedora:created :: xsd:dateTime ;
-last_modified = fedora:lastModified :: xsd:dateTime ;
+type_ssim = (. | (. within rdfs:seeAlso)) / rdf:type :: xsd:string ;
+uuid_ssi = fedora:uuid :: xsd:string ;
+created_dtsi = fedora:created :: xsd:dateTime ;
+last_modified_dtsi = fedora:lastModified :: xsd:dateTime ;
 
-title = fn:first(dc:title, dor-identity:objectLabel, modsrdf:titlePrincipal / rdfs:label) :: xsd:string ;
+title_tsiv = fn:first(dc:title, dor-identity:objectLabel, modsrdf:titlePrincipal / rdfs:label) :: xsd:string ;
 
-collection_title = relsext:isMemberOfCollection / dc:title :: xsd:string ;
-collection_ids = relsext:isMemberOfCollection / dor-identity:otherId :: xsd:string ;
+collection_title_tsim = relsext:isMemberOfCollection / dc:title :: xsd:string ;
+collection_ids_ssim = relsext:isMemberOfCollection / dor-identity:otherId :: xsd:string ;
 
-creator = dor-identity:objectCreator :: xsd:string ;
-otherId = dor-identity:otherId :: xsd:string ;
-sourceId = dor-identity:sourceId :: xsd:string ;
-tags = dor-identity:tag :: xsd:string ;
+creator_ssim = dor-identity:objectCreator :: xsd:string ;
+otherId_ssim = dor-identity:otherId :: xsd:string ;
+sourceId_ssim = dor-identity:sourceId :: xsd:string ;
+tags_ssim = dor-identity:tag :: xsd:string ;
 
-license = dc:license :: xsd:string ;
-rights = dc:rights :: xsd:string ;
+license_tesim = dc:license :: xsd:string ;
+rights_tesim = dc:rights :: xsd:string ;
 
-contents = ldp:contains[. / ldp:contains / ldp:contains / jhove:format] / ldp:contains :: xsd:string ;
-events = ldp:contains / ldp:contains[rdf:type is prov:Activity] :: xsd:string ;
+contents_ssim = ldp:contains[. / ldp:contains / ldp:contains / jhove:format] / ldp:contains :: xsd:string ;
+iiif_info_uri_ssim = (ldp:contains)+ / dor-content:hasStacksIIIFUri :: xsd:string ;
+events_ssim = ^prov:used[rdf:type is prov:Activity] :: xsd:string ;
 
-mods_title = fn:first(modsrdf:title, modsrdf:titlePrincipal / rdfs:label) :: xsd:string ;
-mods_principal_name = modsrdf:namePrincipal / rdfs:label :: xsd:string ;
-mods_name = (modsrdf:name | modsrdf:namePrincipal) / rdfs:label :: xsd:string ;
-mods_identifiers = modsrdf:identifier | modsrdf:identifierGroup / fn:concat(xml:identifierGroupType, ": ", xml:identifierGroupValue) :: xsd:string ;
-mods_note = modsrdf:note | (modsrdf:noteGroup / modsrdf:noteGroupValue) :: xsd:string ;
-mods_genre = modsrdf:genre / rdfs:label :: xsd:string ;
-mods_place = modsrdf:placeOfOrigin / rdfs:label :: xsd:string ;
-mods_publisher = modsrdf:publisher / rdfs:label :: xsd:string ;
-mods_physical_extent = modsrdf:physicalExtent :: xsd:string ;
-mods_subject = modsrdf:subjectComplex / rdfs:label :: xsd:string ;
-mods_created_date = fn:first(modsrdf:resourceDateCreated, modsrdf:resourceDateCreatedStart ):: xsd:string ;
-mods_created_date_start = modsrdf:resourceDateCreatedStart :: xsd:string ;
-mods_created_date_end = modsrdf:resourceDateCreatedEnd :: xsd:string ;
-mods_altnames = (modsrdf:name | modsrdf:namePrincipal) / modsrdf:authorityLink / madsrdf:hasExactExternalAuthority / foaf:focus / foaf:name :: xsd:string ;
-mods_name_lccn = (modsrdf:name | modsrdf:namePrincipal) / modsrdf:authorityLink / <http://id.loc.gov/vocabulary/identifiers/lccn> :: xsd:string ;
-mods_name_lc = (modsrdf:name | modsrdf:namePrincipal) / modsrdf:authorityLink / madsrdf:authoritativeLabel :: xsd:string ;
-mods_geo_subject = modsrdf:subjectComplex / madsrdf:componentList / rdf:first / fn:asUri(fn:concat("http://id.loc.gov/authorities/label/", fn:urlencode(rdfs:label))) / (fn:asUri(fn:header("X-URI")) within .) / madsrdf:authoritativeLabel :: xsd:string;
+mods_title_tsim = fn:first(modsrdf:title, modsrdf:titlePrincipal / rdfs:label) :: xsd:string ;
+mods_principal_name_tsim = modsrdf:namePrincipal / rdfs:label :: xsd:string ;
+mods_principal_name_ssim = modsrdf:namePrincipal / rdfs:label :: xsd:string ;
+mods_name_tsim = (modsrdf:name | modsrdf:namePrincipal) / rdfs:label :: xsd:string ;
+mods_identifiers_ssim = modsrdf:identifier | modsrdf:identifierGroup / fn:concat(xml:identifierGroupType, ": ", xml:identifierGroupValue) :: xsd:string ;
+mods_note_tsim = modsrdf:note | (modsrdf:noteGroup / modsrdf:noteGroupValue) :: xsd:string ;
+mods_genre_ssim = modsrdf:genre / rdfs:label :: xsd:string ;
+mods_place_ssim = modsrdf:placeOfOrigin / rdfs:label :: xsd:string ;
+mods_place_tsim = modsrdf:placeOfOrigin / rdfs:label :: xsd:string ;
+mods_publisher_tsim = modsrdf:publisher / rdfs:label :: xsd:string ;
+mods_physical_extent_ssim = modsrdf:physicalExtent :: xsd:string ;
+mods_subject_ssim = modsrdf:subjectComplex / rdfs:label :: xsd:string ;
+mods_subject_tsim = modsrdf:subjectComplex / rdfs:label :: xsd:string ;
+mods_created_date_ssim = fn:first(modsrdf:resourceDateCreated, modsrdf:resourceDateCreatedStart ):: xsd:string ;
+mods_created_date_start_ssim = modsrdf:resourceDateCreatedStart :: xsd:string ;
+mods_created_date_end_ssim = modsrdf:resourceDateCreatedEnd :: xsd:string ;
+mods_altnames_tsim = (modsrdf:name | modsrdf:namePrincipal) / modsrdf:authorityLink / madsrdf:hasExactExternalAuthority / foaf:focus / foaf:name :: xsd:string ;
+mods_name_lccn_ssim = (modsrdf:name | modsrdf:namePrincipal) / modsrdf:authorityLink / <http://id.loc.gov/vocabulary/identifiers/lccn> :: xsd:string ;
+mods_name_lc_ssim = (modsrdf:name | modsrdf:namePrincipal) / modsrdf:authorityLink / madsrdf:authoritativeLabel :: xsd:string ;
+mods_geo_subject_ssim = modsrdf:subjectComplex / madsrdf:componentList / rdf:first / fn:asUri(fn:concat("http://id.loc.gov/authorities/label/", fn:urlencode(rdfs:label))) / (fn:asUri(fn:header("X-URI")) within .) / madsrdf:authoritativeLabel :: xsd:string;
+mods_geo_subject_tsim = modsrdf:subjectComplex / madsrdf:componentList / rdf:first / fn:asUri(fn:concat("http://id.loc.gov/authorities/label/", fn:urlencode(rdfs:label))) / (fn:asUri(fn:header("X-URI")) within .) / madsrdf:authoritativeLabel :: xsd:string;
 
-oa_tags = ^oa:hasTarget[oa:motivatedBy is oa:tagging] / oa:hasBody / rdfs:label :: xsd:string ;
-oa_exhibit_tags = ^oa:hasTarget[oa:motivatedBy is oa:tagging] / .[oa:serializedBy is <http://localhost:8081/exhibit>] / oa:hasBody / rdfs:label :: xsd:string ;
+oa_tags_ssim = ^oa:hasTarget[oa:motivatedBy is oa:tagging] / oa:hasBody / rdfs:label :: xsd:string ;
+oa_exhibit_tags_ssim = ^oa:hasTarget[oa:motivatedBy is oa:tagging] / .[oa:serializedBy is <http://localhost:8081/exhibit>] / oa:hasBody / rdfs:label :: xsd:string ;
