@@ -14,7 +14,8 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ;
 @prefix oa: <http://www.w3.org/ns/oa#> ;
 
-id = . :: xsd:string ;
+id = fedora:uuid :: xsd:string ;
+url_ssi = . :: xsd:string ;
 type_ssim = (. | (. within rdfs:seeAlso)) / rdf:type :: xsd:string ;
 uuid_ssi = fedora:uuid :: xsd:string ;
 created_dtsi = fedora:created :: xsd:dateTime ;
